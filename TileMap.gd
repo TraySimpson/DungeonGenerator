@@ -45,9 +45,38 @@ func render_tilemap(rooms: Array[Segment]):
 	connectionZone.size = Vector2i(10, 19)
 	connectionZone.position = Vector2i(32, 27)
 	var start = connectionZone.position - (connectionZone.size / 2)
+	var cells = cellular_automata(connectionZone.size, 0)
 	for x in range(connectionZone.size.x):
 			for y in range(connectionZone.size.y):
-				set_cell(LAYER, Vector2i(start.x + x, start.y + y), TILESET_SOURCE, BLUE)
+				set_cell(LAYER, Vector2i(start.x + x, start.y + y), TILESET_SOURCE, 
+				BLUE if cells[x][y] else GREEN)
 
-func cellular_automata():
-	pass
+func cellular_automata(size: Vector2i, iterations: int) -> Array[Array]:
+	var cells = get_array(size, 0.5)
+	for i in iterations:
+		var newCells = get_array(size, 1.0)
+		for x in range(size.x):
+			for y in range(size.y):
+				newCells[x][y] = get_surrounding_wall_count(x, y, cells) > 4
+		cells = newCells
+	return cells
+
+func get_array(size: Vector2i, fill_change: float) -> Array[Array]:
+	var cells: Array[Array] = []
+	for x in range(size.x):
+		var rows = []
+		for y in range(size.y):
+			rows.append(randf() > 0.5)
+		cells.append(rows)
+	return cells
+	
+	
+func get_surrounding_wall_count(targetX: int, targetY: int, map: Array[Array]) -> int:
+	var count = 0
+	for x in range(targetX - 1, targetX + 1):
+		for y in range(targetY - 1, targetY + 1):
+			if (x >= 0 and x < map.size() and y >= 0 and y < map[x].size()):
+				count += 1 if map[x][y] else 0
+			else:
+				count += 1
+	return count
