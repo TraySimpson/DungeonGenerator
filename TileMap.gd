@@ -16,10 +16,32 @@ func _ready():
 	
 
 func create_graph() -> Array[Segment]:
-	var room = Segment.new()
-	room.size = Vector2i(3, 3)
-	room.position = Vector2i(map_width / 2 - 1, map_height - 2)
-	return [ room ]
+	var rooms: Array[Segment] = []
+	# Entrance room
+	var entrance = Segment.new()
+	entrance.size = Vector2i(3, 3)
+	entrance.position = Vector2i(map_width / 2 - 1, map_height - 2)
+	rooms.append(entrance)
+	# Connecting rooms
+	var connectingRoomCount = randi_range(1, 4)
+	for roomIndex in connectingRoomCount:
+		var room = Segment.new()
+		entrance.connections.append(room)
+		room.size = Vector2i(randi_range(2, 6), randi_range(2, 6))
+		rooms.append(room)
+	calculate_weight(entrance)
+	return rooms
+	
+func calculate_weight(segment: Segment) -> int:
+	if (segment.connections.is_empty()):
+		segment.weight = segment.get_room_weight()
+		return segment.weight
+	var weight = 0
+	for connection in segment.connections:
+		weight += calculate_weight(connection)
+	segment.weight = weight
+	return weight
+	
 
 func render_tilemap(rooms: Array[Segment]):
 	for x in range(map_width):
