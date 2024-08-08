@@ -30,6 +30,7 @@ func create_graph() -> Array[Segment]:
 		room.size = Vector2i(randi_range(2, 6), randi_range(2, 6))
 		rooms.append(room)
 	calculate_weight(entrance)
+	calculate_connected_positions(entrance)
 	return rooms
 	
 func calculate_weight(segment: Segment) -> int:
@@ -41,7 +42,13 @@ func calculate_weight(segment: Segment) -> int:
 		weight += calculate_weight(connection)
 	segment.weight = weight
 	return weight
-	
+
+func calculate_connected_positions(segment: Segment):
+	for room in segment.connections:
+		var ratio = float(room.weight) / segment.weight
+		room.position = segment.position + Vector2i(
+			
+		)
 
 func render_tilemap(rooms: Array[Segment]):
 	for x in range(map_width):
