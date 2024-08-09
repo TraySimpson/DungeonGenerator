@@ -2,6 +2,7 @@ extends TileMap
 
 @export var map_width: int = 71
 @export var map_height: int = 40
+var cell_iterations = 1
 
 const LAYER = 0
 const TILESET_SOURCE = 0
@@ -12,9 +13,17 @@ const GREEN: Vector2i = Vector2i(1, 1)
 
 
 func _ready():
+	draw_map()
+
+func _input(event):
+	if event is InputEventKey and event.pressed:
+		print("Hit " + str(int(event.as_text())))
+		cell_iterations = int(event.as_text())
+		draw_map()
+		
+func draw_map():
 	var rooms = create_graph()
 	render_tilemap(rooms)
-	
 
 func create_graph() -> Array[Segment]:
 	var rooms: Array[Segment] = []
@@ -26,7 +35,7 @@ func create_graph() -> Array[Segment]:
 	# Connecting rooms
 	var room = Segment.new()
 	entrance.connections.append(room)
-	room.size = Vector2i(randi_range(2, 6), randi_range(2, 6))
+	room.size = Vector2i(4, 4)
 	room.position = Vector2i( 25, 23)
 	rooms.append(room)
 	return rooms
@@ -45,7 +54,7 @@ func render_tilemap(rooms: Array[Segment]):
 	connectionZone.size = Vector2i(10, 19)
 	connectionZone.position = Vector2i(32, 27)
 	var start = connectionZone.position - (connectionZone.size / 2)
-	var cells = cellular_automata(connectionZone.size, 0)
+	var cells = cellular_automata(connectionZone.size, cell_iterations)
 	for x in range(connectionZone.size.x):
 			for y in range(connectionZone.size.y):
 				set_cell(LAYER, Vector2i(start.x + x, start.y + y), TILESET_SOURCE, 
@@ -57,7 +66,7 @@ func cellular_automata(size: Vector2i, iterations: int) -> Array[Array]:
 		var newCells = get_array(size, 1.0)
 		for x in range(size.x):
 			for y in range(size.y):
-				newCells[x][y] = get_surrounding_wall_count(x, y, cells) > 4
+				newCells[x][y] = get_surrounding_wall_count(x, y, cells) >= 4
 		cells = newCells
 	return cells
 
