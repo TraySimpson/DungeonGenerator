@@ -2,7 +2,9 @@ extends TileMap
 
 @export var map_width: int = 71
 @export var map_height: int = 40
-var cell_iterations = 1
+@export var seed: int = 12
+var cell_iterations = 0
+var rng: RandomNumberGenerator
 
 const LAYER = 0
 const TILESET_SOURCE = 0
@@ -22,6 +24,8 @@ func _input(event):
 		draw_map()
 		
 func draw_map():
+	rng = RandomNumberGenerator.new()
+	rng.seed = seed
 	var rooms = create_graph()
 	render_tilemap(rooms)
 
@@ -51,7 +55,7 @@ func render_tilemap(rooms: Array[Segment]):
 			for y in range(room.size.y):
 				set_cell(LAYER, Vector2i(start.x + x, start.y + y), TILESET_SOURCE, WHITE)
 	var connectionZone = Segment.new()
-	connectionZone.size = Vector2i(20, 20)
+	connectionZone.size = Vector2i(80, 80)
 	connectionZone.position = Vector2i(32, 27)
 	var start = connectionZone.position - (connectionZone.size / 2)
 	var cells = cellular_automata(connectionZone.size, cell_iterations)
@@ -86,7 +90,7 @@ func get_array(size: Vector2i, fill_change: float) -> Array[Array]:
 			if (x == 0 or x == size.x - 1 or y == 0 or y == size.y - 1):
 				val = false
 			else:
-				val = randf() > fill_change
+				val = rng.randf() > fill_change
 			if (val):
 				count += 1
 			rows.append(val)
