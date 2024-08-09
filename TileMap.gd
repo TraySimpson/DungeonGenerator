@@ -2,7 +2,8 @@ extends TileMap
 
 @export var map_width: int = 71
 @export var map_height: int = 40
-@export var seed: int = 12
+@export var seed: int = 10059
+@export var start_fill: float = 0.5
 var cell_iterations = 0
 var rng: RandomNumberGenerator
 
@@ -65,7 +66,7 @@ func render_tilemap(rooms: Array[Segment]):
 				WHITE if cells[x][y] else BLACK)
 
 func cellular_automata(size: Vector2i, iterations: int) -> Array[Array]:
-	var cells = get_array(size, 0.6, true)
+	var cells = get_array(size, start_fill, true)
 	for i in iterations:
 		var newCells = get_array(size, 0.0)
 		for x in range(size.x):
