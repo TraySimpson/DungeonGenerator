@@ -3,7 +3,8 @@ extends TileMap
 @export var map_width: int = 71
 @export var map_height: int = 40
 @export var seed: int = 10059
-@export var start_fill: float = 0.5
+@export var blue_fill: float = 0.5
+@export var green_fill: float = 0.8
 @export var room_count: int = 5
 
 var cell_iterations = 0
@@ -66,7 +67,9 @@ func get_array_from_tilemap() -> Array[Array]:
 				WHITE:
 					val = true
 				BLUE:
-					val = rng.randf() > start_fill
+					val = rng.randf() < blue_fill
+				GREEN:
+					val = rng.randf() < green_fill
 				_:
 					val = false
 			row.append(val)
