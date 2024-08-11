@@ -1,23 +1,36 @@
 [gd_scene load_steps=5 format=3 uid="uid://cvjaqrm1h0gmr"]
 
-[ext_resource type="Texture2D" uid="uid://b1s47u2hujtu6" path="res://graphics/BasicTilemap.png" id="1_1qdp8"]
-[ext_resource type="Script" path="res://TileMap.gd" id="2_oeofs"]
+[ext_resource type="Texture2D" uid="uid://c031u72uy1guy" path="res://graphics/TilemapDemo.png" id="1_luhud"]
+[ext_resource type="Script" path="res://DualGridTilemap.gd" id="2_45y68"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f4no7"]
-texture = ExtResource("1_1qdp8")
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ul41n"]
+texture = ExtResource("1_luhud")
 0:0/0 = 0
 1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
 0:1/0 = 0
 1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
 
-[sub_resource type="TileSet" id="TileSet_5b1ok"]
-sources/0 = SubResource("TileSetAtlasSource_f4no7")
+[sub_resource type="TileSet" id="TileSet_sg8mx"]
+sources/0 = SubResource("TileSetAtlasSource_ul41n")
 
 [node name="Main" type="Node2D"]
 
-[node name="TileMap" type="TileMap" parent="."]
-position = Vector2(250, 110)
-scale = Vector2(0.5, 0.5)
-tile_set = SubResource("TileSet_5b1ok")
+[node name="WorldGrid" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_sg8mx")
 format = 2
-script = ExtResource("2_oeofs")
+layer_0/name = "Main"
+layer_1/name = "Display"
+layer_1/tile_data = PackedInt32Array()
+script = ExtResource("2_45y68")
