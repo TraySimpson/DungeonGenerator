@@ -61,7 +61,14 @@ func get_array_from_tilemap() -> Array[Array]:
 	for x in range(map_width):
 		var row = []
 		for y in range(map_height):
-			var val = get_cell_atlas_coords(LAYER, Vector2i(x, y)) == WHITE
+			var val = false
+			match get_cell_atlas_coords(LAYER, Vector2i(x, y)):
+				WHITE:
+					val = true
+				BLUE:
+					val = rng.randf() > start_fill
+				_:
+					val = false
 			row.append(val)
 		map.append(row)
 	return map
