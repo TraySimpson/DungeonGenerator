@@ -1,6 +1,8 @@
 class_name MapGraph
 extends RefCounted
 
+@export var max_connections: int = 3
+@export var longest_depth: int = 5
 
 var root: Segment
 var segments: Array [Segment] = []
@@ -14,14 +16,14 @@ func generate_graph(room_count: int) -> void:
 	
 	# Entrance room
 	root = Segment.new()
-	root.size = Vector2i(3, 3)
+	root.size = Vector2i(8, 8)
 	segments.append(root)
 	
 	# Connecting rooms
 	for i in range(room_count):
 		var room = Segment.new()
 		root.connections.append(room)
-		room.size = Vector2i(rng.randi_range(4, 7), rng.randi_range(4, 7))
+		room.size = Vector2i(rng.randi_range(4, 20), rng.randi_range(4, 20))
 		segments.append(room)
 
 func generate_room_positions(mapSize: Vector2i) -> void:
