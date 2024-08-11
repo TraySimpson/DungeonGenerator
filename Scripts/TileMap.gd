@@ -30,31 +30,38 @@ func _input(event):
 		
 func draw_map():
 	rng = RandomNumberGenerator.new()
-	#rng.seed = seed
+	rng.seed = seed
 	cellular_automata = CellularAutomata.new()
-	cellular_automata.init(rng)
+	cellular_automata.init(rng, Vector2i(map_width, map_height))
 	map_graph = MapGraph.new()
 	map_graph.init(rng)
-	map_graph.generate_graph(room_count)
-	map_graph.generate_room_positions(Vector2i(map_width, map_height))
+	#map_graph.generate_graph(room_count)
+	#map_graph.generate_room_positions(Vector2i(map_width, map_height))
 	render_tilemap(map_graph.segments)
 	
 
 func render_tilemap(rooms: Array[Segment]):
+	#for x in range(map_width):
+		#for y in range(map_height):
+			#set_cell(LAYER, Vector2i(x, y), TILESET_SOURCE, BLACK)
+	#for room in rooms:
+		#var start = room.position - (room.size / 2)
+		#for x in range(room.size.x):
+			#for y in range(room.size.y):
+				#set_cell(LAYER, Vector2i(start.x + x, start.y + y), TILESET_SOURCE, WHITE)
+	cellular_automata.cells = get_array_from_tilemap()
+	cellular_automata.iterate(cell_iterations)
 	for x in range(map_width):
 		for y in range(map_height):
-			set_cell(LAYER, Vector2i(x, y), TILESET_SOURCE, BLACK)
-	for room in rooms:
-		var start = room.position - (room.size / 2)
-		for x in range(room.size.x):
-			for y in range(room.size.y):
-				set_cell(LAYER, Vector2i(start.x + x, start.y + y), TILESET_SOURCE, WHITE)
-	var connectionZone = Segment.new()
-	connectionZone.size = Vector2i(80, 80)
-	connectionZone.position = Vector2i(32, 27)
-	var start = connectionZone.position - (connectionZone.size / 2)
-	#var cells = cellular_automata.get_cells(connectionZone.size, cell_iterations, start_fill)
-	#for x in range(connectionZone.size.x):
-		#for y in range(connectionZone.size.y):
-			#set_cell(LAYER, Vector2i(start.x + x, start.y + y), TILESET_SOURCE, 
-			#WHITE if cells[x][y] else BLACK)
+			set_cell(LAYER, Vector2i(x, y), TILESET_SOURCE, 
+			WHITE if cellular_automata.cells[x][y] else BLACK)
+
+func get_array_from_tilemap() -> Array[Array]:
+	var map: Array[Array] = []
+	for x in range(map_width):
+		var row = []
+		for y in range(map_height):
+			var val = get_cell_atlas_coords(LAYER, Vector2i(x, y)) == WHITE
+			row.append(val)
+		map.append(row)
+	return map

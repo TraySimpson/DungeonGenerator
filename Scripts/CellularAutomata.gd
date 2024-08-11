@@ -1,14 +1,18 @@
 class_name CellularAutomata
 extends RefCounted
 
-
+var size: Vector2i
+var cells: Array = []
 var rng: RandomNumberGenerator
 
-func init(generator: RandomNumberGenerator):
+func init(generator: RandomNumberGenerator, mapSize: Vector2i):
+	size = mapSize
 	rng = generator
 
-func get_cells(size: Vector2i, iterations: int, startFill: float) -> Array[Array]:
-	var cells = get_array(size, startFill, true)
+func random_fill_cells(fill: float, includeBorders: bool = true) -> void:
+	cells = get_array(size, fill, includeBorders)
+
+func iterate(iterations: int) -> void:
 	for i in iterations:
 		var newCells = get_array(size, 0.0)
 		for x in range(size.x):
@@ -21,11 +25,9 @@ func get_cells(size: Vector2i, iterations: int, startFill: float) -> Array[Array
 				else:
 					newCells[x][y] = cells[x][y]
 		cells = newCells
-	return cells
 
 func get_array(size: Vector2i, fill_change: float, include_borders: bool = false) -> Array[Array]:
 	var cells: Array[Array] = []
-	var count = 0
 	for x in range(size.x):
 		var rows = []
 		for y in range(size.y):
@@ -34,11 +36,8 @@ func get_array(size: Vector2i, fill_change: float, include_borders: bool = false
 				val = false
 			else:
 				val = rng.randf() > fill_change
-			if (val):
-				count += 1
 			rows.append(val)
 		cells.append(rows)
-	print("Fill: " + str(fill_change) + "   " + str(count) + "/" + str(size.x * size.y))
 	return cells
 	
 	
