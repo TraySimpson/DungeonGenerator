@@ -1,10 +1,10 @@
 [gd_scene load_steps=5 format=3 uid="uid://cvjaqrm1h0gmr"]
 
-[ext_resource type="Texture2D" uid="uid://b1s47u2hujtu6" path="res://graphics/BasicTilemap.png" id="1_1qdp8"]
-[ext_resource type="Script" path="res://TileMap.gd" id="2_oeofs"]
+[ext_resource type="Texture2D" uid="uid://b1s47u2hujtu6" path="res://Graphics/BasicTilemap.png" id="1_agoim"]
+[ext_resource type="Script" path="res://Scripts/TileMap.gd" id="2_hhpfh"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f4no7"]
-texture = ExtResource("1_1qdp8")
+texture = ExtResource("1_agoim")
 0:0/0 = 0
 1:0/0 = 0
 0:1/0 = 0
@@ -20,4 +20,4 @@ position = Vector2(250, 110)
 scale = Vector2(0.5, 0.5)
 tile_set = SubResource("TileSet_5b1ok")
 format = 2
-script = ExtResource("2_oeofs")
+script = ExtResource("2_hhpfh")
