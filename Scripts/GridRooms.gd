@@ -2,7 +2,9 @@ class_name GridRooms
 extends RefCounted
 
 
-@export var tiles_per_cell: int = 10
+@export var max_room_dimension: int = 20
+@export var min_room_dimension: int = 6
+@export var tiles_per_cell: int = 30
 @export var target_depth: int = 10
 @export var max_room_connections: int = 3
 var global_grid_size: Vector2i
@@ -100,8 +102,8 @@ func get_global_grid() -> Array[Array]:
 	return global_grid
 
 func draw_room(map, cell: GridCell) -> void:
-	var width = rng.randi_range(4, tiles_per_cell - 1)
-	var height = rng.randi_range(4, tiles_per_cell - 1)
+	var width = rng.randi_range(min_room_dimension, max_room_dimension + 1)
+	var height = rng.randi_range(min_room_dimension, max_room_dimension + 1)
 	var x_offset = rng.randi_range(0, tiles_per_cell - (2 + width))
 	var y_offset = rng.randi_range(0, tiles_per_cell - (2 + height))
 	var position = cell.coordinates * tiles_per_cell + Vector2i(x_offset, y_offset)
