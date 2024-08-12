@@ -2,7 +2,7 @@ class_name GridRooms
 extends RefCounted
 
 
-@export var tiles_per_cell: int = 20
+@export var tiles_per_cell: int = 10
 @export var target_depth: int = 10
 @export var max_room_connections: int = 3
 var global_grid_size: Vector2i
@@ -43,7 +43,9 @@ func add_connections() -> void:
 	var open_spaces = get_empty_neighbors(cell)
 	if open_spaces.is_empty():
 		return
-	var connection_count = get_connection_count(open_spaces.size())
+	var connection_count = get_connection_count(open_spaces.size()) - cell.connections.size()
+	if (connection_count < 0):
+		connection_count = 0
 	print("Creating room with " + str(connection_count) + " connections")
 	for i in range(connection_count):
 		var new_room: GridCell = open_spaces.pop_at(
@@ -78,7 +80,7 @@ func get_empty_neighbors(cell: GridCell) -> Array[GridCell]:
 func get_connection_count(max_connections: int) -> int:
 	if max_connections > max_room_connections:
 		max_connections = max_room_connections
-	return rng.randi_range(1, max_connections)
+	return rng.randi_range(2, max_connections)
 	
 func get_global_coord_tile(x: int, y: int) -> bool:
 	return grid[x / tiles_per_cell][y / tiles_per_cell].type != CellType.Empty
