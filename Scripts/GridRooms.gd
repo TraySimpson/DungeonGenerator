@@ -73,7 +73,7 @@ func get_empty_neighbors(cell: GridCell) -> Array[GridCell]:
 	for x in range(cell.coordinates.x - 1, cell.coordinates.x + 2):
 		for y in range(cell.coordinates.y - 1, cell.coordinates.y + 2):
 			if (x >= 0 and x < map_grid_size.x and y >= 0 and y < map_grid_size.y):
-				if (grid[x][y] != cell and (x == cell.coordinates.x or y == cell.coordinates.y)):
+				if (grid[x][y] != cell and grid[x][y].type == CellType.Empty and (x == cell.coordinates.x or y == cell.coordinates.y)):
 					neighbors.append(grid[x][y])
 	return neighbors
 
