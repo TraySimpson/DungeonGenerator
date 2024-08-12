@@ -4,12 +4,14 @@ extends RefCounted
 
 @export var max_room_dimension: int = 15
 @export var min_room_dimension: int = 6
-@export var hallway_thickness: int = 6
+@export var hallway_thickness: int = 2
 @export var tiles_per_cell: int = 20
 @export var target_depth: int = 10
-@export var max_room_connections: int = 3
+@export var max_room_connections: int = 4
+@export var min_room_connections: int = 1
 @export var background_fill = .0
-@export var hallway_fill = .7
+@export var hallway_fill = 1.0
+@export var room_fill = 1.0
 var global_grid_size: Vector2i
 var map_grid_size: Vector2i
 var rng: RandomNumberGenerator
@@ -48,7 +50,7 @@ func add_connections() -> void:
 	var open_spaces = get_empty_neighbors(cell)
 	if open_spaces.is_empty():
 		return
-	var connection_count = get_connection_count(open_spaces.size()) - cell.connections.size()
+	var connection_count = get_connection_count(open_spaces.size(), cell.depth) - cell.connections.size()
 	if (connection_count < 0):
 		connection_count = 0
 	print("Creating room with " + str(connection_count) + " connections")
@@ -82,10 +84,11 @@ func get_empty_neighbors(cell: GridCell) -> Array[GridCell]:
 					neighbors.append(grid[x][y])
 	return neighbors
 
-func get_connection_count(max_connections: int) -> int:
+func get_connection_count(max_connections: int, depth: int) -> int:
 	if max_connections > max_room_connections:
 		max_connections = max_room_connections
-	return rng.randi_range(2, max_connections)
+	var min_connections = min_room_connections if depth >= (target_depth / 2) + 1 else min_room_connections + 2
+	return rng.randi_range(min_room_connections, max_connections)
 	
 func get_global_coord_tile(x: int, y: int) -> bool:
 	return grid[x / tiles_per_cell][y / tiles_per_cell].type != CellType.Empty
@@ -112,7 +115,7 @@ func draw_room(map, cell: GridCell) -> void:
 	var position = cell.coordinates * tiles_per_cell + Vector2i(x_offset, y_offset)
 	for x in range(width):
 		for y in range(height):
-			map[x + position.x][y + position.y] = true
+			map[x + position.x][y + position.y] = rng.randf() < room_fill
 
 func draw_connections(map, cell: GridCell) -> void:
 	for hall in cell.connections:
