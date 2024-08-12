@@ -42,7 +42,7 @@ func draw_map():
 	
 
 func render_tilemap():
-	cellular_automata.cells = get_array_from_grid_graph()
+	cellular_automata.cells = grid_rooms.get_global_grid()
 	#cellular_automata.cells = get_array_from_tilemap()
 	cellular_automata.iterate(cell_iterations)
 	for x in range(map_width):

@@ -5,6 +5,7 @@ extends RefCounted
 @export var tiles_per_cell: int = 10
 @export var target_depth: int = 5
 @export var max_room_connections: int = 3
+var global_grid_size: Vector2i
 var map_grid_size: Vector2i
 var rng: RandomNumberGenerator
 var grid: Array[Array] = []
@@ -12,6 +13,7 @@ var processing_rooms: Array[GridCell] = []
 
 
 func init(generator: RandomNumberGenerator, mapSize: Vector2i) -> void:
+	global_grid_size = mapSize
 	map_grid_size = mapSize / tiles_per_cell
 	rng = generator
 	grid = get_clear_grid()
@@ -79,3 +81,26 @@ func get_connection_count(max_connections: int) -> int:
 	
 func get_global_coord_tile(x: int, y: int) -> bool:
 	return grid[x / tiles_per_cell][y / tiles_per_cell].type != CellType.Empty
+
+func get_global_grid() -> Array[Array]:
+	var global_grid: Array[Array] = []
+	for x in global_grid_size.x:
+		var row = []
+		for y in global_grid_size.y:
+			row.append(false)
+		global_grid.append(row)
+	for x in map_grid_size.x:
+		for y in map_grid_size.y:
+			if (grid[x][y].type != CellType.Empty):
+				draw_room(global_grid, grid[x][y])
+	return global_grid
+
+func draw_room(map, cell: GridCell) -> void:
+	var width = rng.randi_range(4, tiles_per_cell - 1)
+	var height = rng.randi_range(4, tiles_per_cell - 1)
+	var x_offset = rng.randi_range(0, tiles_per_cell - (2 + width))
+	var y_offset = rng.randi_range(0, tiles_per_cell - (2 + height))
+	var position = cell.coordinates * tiles_per_cell + Vector2i(x_offset, y_offset)
+	for x in range(width):
+		for y in range(height):
+			map[x + position.x][y + position.y] = true
