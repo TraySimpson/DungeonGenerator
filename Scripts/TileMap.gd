@@ -32,7 +32,7 @@ func _input(event):
 		
 func draw_map():
 	rng = RandomNumberGenerator.new()
-	rng.seed = seed
+	#rng.seed = seed
 	cellular_automata = CellularAutomata.new()
 	cellular_automata.init(rng, Vector2i(map_width, map_height))
 	grid_rooms = GridRooms.new()

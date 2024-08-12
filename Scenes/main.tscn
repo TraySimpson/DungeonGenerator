@@ -20,5 +20,5 @@ scale = Vector2(0.5, 0.5)
 tile_set = SubResource("TileSet_5b1ok")
 format = 2
 script = ExtResource("2_hhpfh")
-map_width = 140
-map_height = 80
+map_width = 135
+map_height = 75

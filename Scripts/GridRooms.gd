@@ -2,8 +2,8 @@ class_name GridRooms
 extends RefCounted
 
 
-@export var tiles_per_cell: int = 10
-@export var target_depth: int = 5
+@export var tiles_per_cell: int = 15
+@export var target_depth: int = 10
 @export var max_room_connections: int = 3
 var global_grid_size: Vector2i
 var map_grid_size: Vector2i
@@ -109,23 +109,24 @@ func draw_room(map, cell: GridCell) -> void:
 
 func draw_connections(map, cell: GridCell) -> void:
 	for hall in cell.connections:
-		var thickness = rng.randi_range(2, 3)
+		var thickness = 2
 		var direction = cell.coordinates - hall.coordinates
 		var start = Vector2i(0,0)
 		var size = Vector2i(0,0)
+		var hall_length = ceili(float(tiles_per_cell) / 2)
 		match direction:
 			Vector2i(0, 1): # Connection above
 				start = cell.coordinates * tiles_per_cell + Vector2i(tiles_per_cell / 2, 0)
-				size = Vector2i(thickness, tiles_per_cell / 2)
+				size = Vector2i(thickness, hall_length)
 			Vector2i(0, -1): # Connection below
 				start = cell.coordinates * tiles_per_cell + Vector2i(tiles_per_cell / 2, tiles_per_cell / 2)
-				size = Vector2i(thickness, tiles_per_cell / 2)
+				size = Vector2i(thickness, hall_length)
 			Vector2i(1, 0): # Connection to left
 				start = cell.coordinates * tiles_per_cell + Vector2i(0, tiles_per_cell / 2)
-				size = Vector2i(tiles_per_cell / 2, thickness)
+				size = Vector2i(hall_length, thickness)
 			Vector2i(-1, 0): # Connction to right
 				start = cell.coordinates * tiles_per_cell + Vector2i(tiles_per_cell / 2, tiles_per_cell / 2)
-				size = Vector2i(tiles_per_cell / 2, thickness)
+				size = Vector2i(hall_length, thickness)
 			_:
 				printerr("Drawing connection on diagonal: " + str(direction))
 		for x in range(size.x):
