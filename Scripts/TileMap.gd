@@ -11,6 +11,7 @@ var cell_iterations = 0
 var rng: RandomNumberGenerator
 var map_graph: MapGraph
 var cellular_automata: CellularAutomata
+var grid_rooms: GridRooms
 
 const LAYER = 0
 const TILESET_SOURCE = 0
@@ -34,28 +35,39 @@ func draw_map():
 	rng.seed = seed
 	cellular_automata = CellularAutomata.new()
 	cellular_automata.init(rng, Vector2i(map_width, map_height))
-	map_graph = MapGraph.new()
-	map_graph.init(rng)
-	#map_graph.generate_graph(room_count)
-	#map_graph.generate_room_positions(Vector2i(map_width, map_height))
-	render_tilemap(map_graph.segments)
+	grid_rooms = GridRooms.new()
+	grid_rooms.init(rng, Vector2i(map_width, map_height))
+	grid_rooms.generate_map()
+	render_tilemap()
 	
 
-func render_tilemap(rooms: Array[Segment]):
-	#for x in range(map_width):
-		#for y in range(map_height):
-			#set_cell(LAYER, Vector2i(x, y), TILESET_SOURCE, BLACK)
-	#for room in rooms:
-		#var start = room.position - (room.size / 2)
-		#for x in range(room.size.x):
-			#for y in range(room.size.y):
-				#set_cell(LAYER, Vector2i(start.x + x, start.y + y), TILESET_SOURCE, WHITE)
-	cellular_automata.cells = get_array_from_tilemap()
+func render_tilemap():
+	cellular_automata.cells = get_array_from_grid_graph()
+	#cellular_automata.cells = get_array_from_tilemap()
 	cellular_automata.iterate(cell_iterations)
 	for x in range(map_width):
 		for y in range(map_height):
 			set_cell(LAYER, Vector2i(x, y), TILESET_SOURCE, 
 			WHITE if cellular_automata.cells[x][y] else BLACK)
+
+func get_array_from_grid_graph() -> Array[Array]:
+	var map: Array[Array] = []
+	for x in range(map_width):
+		var row = []
+		for y in range(map_height):
+			var val = false
+			match get_cell_atlas_coords(LAYER, Vector2i(x, y)):
+				WHITE:
+					val = true
+				BLUE:
+					val = rng.randf() < blue_fill
+				GREEN:
+					val = rng.randf() < green_fill
+				_:
+					val = false
+			row.append(val)
+		map.append(row)
+	return map
 
 func get_array_from_tilemap() -> Array[Array]:
 	var map: Array[Array] = []

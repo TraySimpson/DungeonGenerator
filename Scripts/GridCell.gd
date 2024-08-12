@@ -1,6 +1,7 @@
 class_name GridCell
 extends RefCounted
 
-var type: CellType
+var type
 var coordinates: Vector2i
-var connections: Array[GridCell]
+var connections: Array[GridCell] = []
+var depth: int
