@@ -4,10 +4,12 @@ extends RefCounted
 
 @export var max_room_dimension: int = 15
 @export var min_room_dimension: int = 6
-@export var tiles_per_cell: int = 30
+@export var hallway_thickness: int = 6
+@export var tiles_per_cell: int = 20
 @export var target_depth: int = 10
 @export var max_room_connections: int = 3
-@export var background_fill = .5
+@export var background_fill = .0
+@export var hallway_fill = .7
 var global_grid_size: Vector2i
 var map_grid_size: Vector2i
 var rng: RandomNumberGenerator
@@ -114,7 +116,7 @@ func draw_room(map, cell: GridCell) -> void:
 
 func draw_connections(map, cell: GridCell) -> void:
 	for hall in cell.connections:
-		var thickness = 2
+		var thickness = hallway_thickness
 		var direction = cell.coordinates - hall.coordinates
 		var start = Vector2i(0,0)
 		var size = Vector2i(0,0)
@@ -136,4 +138,4 @@ func draw_connections(map, cell: GridCell) -> void:
 				printerr("Drawing connection on diagonal: " + str(direction))
 		for x in range(size.x):
 			for y in range(size.y):
-				map[start.x + x][start.y + y] = true
+				map[start.x + x][start.y + y] = rng.randf() < hallway_fill
