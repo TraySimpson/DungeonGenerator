@@ -44,6 +44,7 @@ func add_connections() -> void:
 	if open_spaces.is_empty():
 		return
 	var connection_count = get_connection_count(open_spaces.size())
+	print("Creating room with " + str(connection_count) + " connections")
 	for i in range(connection_count):
 		var new_room: GridCell = open_spaces.pop_at(
 			rng.randi_range(0, open_spaces.size() - 1)
@@ -113,20 +114,20 @@ func draw_connections(map, cell: GridCell) -> void:
 		var start = Vector2i(0,0)
 		var size = Vector2i(0,0)
 		match direction:
-			Vector2i(0, 1):
-				start = cell.coordinates * tiles_per_cell + Vector2i(tiles_per_cell / 2, tiles_per_cell / 2)
-				size = Vector2i(thickness, tiles_per_cell / 2)
-			Vector2i(0, -1):
+			Vector2i(0, 1): # Connection above
 				start = cell.coordinates * tiles_per_cell + Vector2i(tiles_per_cell / 2, 0)
 				size = Vector2i(thickness, tiles_per_cell / 2)
-			Vector2i(1, 0):
+			Vector2i(0, -1): # Connection below
+				start = cell.coordinates * tiles_per_cell + Vector2i(tiles_per_cell / 2, tiles_per_cell / 2)
+				size = Vector2i(thickness, tiles_per_cell / 2)
+			Vector2i(1, 0): # Connection to left
 				start = cell.coordinates * tiles_per_cell + Vector2i(0, tiles_per_cell / 2)
 				size = Vector2i(tiles_per_cell / 2, thickness)
-			Vector2i(-1, 0):
+			Vector2i(-1, 0): # Connction to right
 				start = cell.coordinates * tiles_per_cell + Vector2i(tiles_per_cell / 2, tiles_per_cell / 2)
 				size = Vector2i(tiles_per_cell / 2, thickness)
 			_:
-				print(direction)
+				printerr("Drawing connection on diagonal: " + str(direction))
 		for x in range(size.x):
 			for y in range(size.y):
 				map[start.x + x][start.y + y] = true
