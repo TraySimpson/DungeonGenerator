@@ -55,16 +55,7 @@ func get_array_from_grid_graph() -> Array[Array]:
 	for x in range(map_width):
 		var row = []
 		for y in range(map_height):
-			var val = false
-			match get_cell_atlas_coords(LAYER, Vector2i(x, y)):
-				WHITE:
-					val = true
-				BLUE:
-					val = rng.randf() < blue_fill
-				GREEN:
-					val = rng.randf() < green_fill
-				_:
-					val = false
+			var val = grid_rooms.get_global_coord_tile(x, y)
 			row.append(val)
 		map.append(row)
 	return map
