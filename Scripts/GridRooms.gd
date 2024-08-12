@@ -2,7 +2,7 @@ class_name GridRooms
 extends RefCounted
 
 
-@export var tiles_per_cell: int = 15
+@export var tiles_per_cell: int = 20
 @export var target_depth: int = 10
 @export var max_room_connections: int = 3
 var global_grid_size: Vector2i
