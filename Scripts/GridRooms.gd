@@ -70,7 +70,7 @@ func get_empty_neighbors(cell: GridCell) -> Array[GridCell]:
 	for x in range(cell.coordinates.x - 1, cell.coordinates.x + 2):
 		for y in range(cell.coordinates.y - 1, cell.coordinates.y + 2):
 			if (x >= 0 and x < map_grid_size.x and y >= 0 and y < map_grid_size.y):
-				if (grid[x][y] != cell):
+				if (grid[x][y] != cell and (x == cell.coordinates.x or y == cell.coordinates.y)):
 					neighbors.append(grid[x][y])
 	return neighbors
 
@@ -93,6 +93,7 @@ func get_global_grid() -> Array[Array]:
 		for y in map_grid_size.y:
 			if (grid[x][y].type != CellType.Empty):
 				draw_room(global_grid, grid[x][y])
+				draw_connections(global_grid, grid[x][y])
 	return global_grid
 
 func draw_room(map, cell: GridCell) -> void:
@@ -104,3 +105,28 @@ func draw_room(map, cell: GridCell) -> void:
 	for x in range(width):
 		for y in range(height):
 			map[x + position.x][y + position.y] = true
+
+func draw_connections(map, cell: GridCell) -> void:
+	for hall in cell.connections:
+		var thickness = rng.randi_range(2, 3)
+		var direction = cell.coordinates - hall.coordinates
+		var start = Vector2i(0,0)
+		var size = Vector2i(0,0)
+		match direction:
+			Vector2i(0, 1):
+				start = cell.coordinates * tiles_per_cell + Vector2i(tiles_per_cell / 2, tiles_per_cell / 2)
+				size = Vector2i(thickness, tiles_per_cell / 2)
+			Vector2i(0, -1):
+				start = cell.coordinates * tiles_per_cell + Vector2i(tiles_per_cell / 2, 0)
+				size = Vector2i(thickness, tiles_per_cell / 2)
+			Vector2i(1, 0):
+				start = cell.coordinates * tiles_per_cell + Vector2i(0, tiles_per_cell / 2)
+				size = Vector2i(tiles_per_cell / 2, thickness)
+			Vector2i(-1, 0):
+				start = cell.coordinates * tiles_per_cell + Vector2i(tiles_per_cell / 2, tiles_per_cell / 2)
+				size = Vector2i(tiles_per_cell / 2, thickness)
+			_:
+				print(direction)
+		for x in range(size.x):
+			for y in range(size.y):
+				map[start.x + x][start.y + y] = true
