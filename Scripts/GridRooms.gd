@@ -2,11 +2,12 @@ class_name GridRooms
 extends RefCounted
 
 
-@export var max_room_dimension: int = 20
+@export var max_room_dimension: int = 15
 @export var min_room_dimension: int = 6
 @export var tiles_per_cell: int = 30
 @export var target_depth: int = 10
 @export var max_room_connections: int = 3
+@export var background_fill = .5
 var global_grid_size: Vector2i
 var map_grid_size: Vector2i
 var rng: RandomNumberGenerator
@@ -92,7 +93,7 @@ func get_global_grid() -> Array[Array]:
 	for x in global_grid_size.x:
 		var row = []
 		for y in global_grid_size.y:
-			row.append(false)
+			row.append(rng.randf() < background_fill)
 		global_grid.append(row)
 	for x in map_grid_size.x:
 		for y in map_grid_size.y:
