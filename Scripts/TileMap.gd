@@ -26,7 +26,6 @@ func _ready():
 
 func _input(event):
 	if event is InputEventKey and event.pressed:
-		print("Hit " + str(int(event.as_text())))
 		cell_iterations = int(event.as_text())
 		draw_map()
 		

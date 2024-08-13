@@ -41,9 +41,27 @@ func generate_map() -> void:
 	var root: GridCell = grid[map_grid_size.x / 2][map_grid_size.y - 1]
 	root.type = CellType.Room
 	root.depth = 1
-	processing_rooms = [root]
-	while not processing_rooms.is_empty() and should_add_more_rooms():
-		add_connections()
+	var lastNode = root
+	for i in range(target_depth - 1):
+		if not grid_is_full():
+			var neighbors = get_empty_neighbors(lastNode)
+			var node: GridCell = neighbors[rng.randi_range(0, neighbors.size() - 1)]
+			node.type = CellType.Room
+			node.depth = lastNode.depth + 1
+			node.connections.append(lastNode)
+			lastNode.connections.append(node)
+			lastNode = node
+	#processing_rooms = [root]
+	#while not processing_rooms.is_empty() and should_add_more_rooms():
+		#add_connections()
+
+func grid_is_full() -> bool:
+	for x in range(map_grid_size.x):
+		for y in range(map_grid_size.y):
+			var tile: GridCell = grid[x][y]
+			if tile.type == CellType.Empty:
+				return false
+	return true
 
 func add_connections() -> void:
 	var cell: GridCell = processing_rooms.pop_front()
@@ -64,16 +82,6 @@ func add_connections() -> void:
 		new_room.type = CellType.Room
 		processing_rooms.append(new_room)
 
-func should_add_more_rooms() -> bool:
-	var has_empty: bool = false
-	for x in range(map_grid_size.x):
-		for y in range(map_grid_size.y):
-			var tile: GridCell = grid[x][y]
-			if tile.depth == target_depth:
-				return false
-			elif tile.type == CellType.Empty:
-				has_empty = true
-	return has_empty
 	
 func get_empty_neighbors(cell: GridCell) -> Array[GridCell]:
 	var neighbors: Array[GridCell] = []
