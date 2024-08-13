@@ -13,7 +13,7 @@ extends RefCounted
 @export var background_fill = .0
 @export var hallway_fill = 1.0
 @export var room_fill = 1.0
-@export var room_grid_fill = 1.0
+@export var room_grid_fill = .5
 var global_grid_size: Vector2i
 var map_grid_size: Vector2i
 var rng: RandomNumberGenerator
