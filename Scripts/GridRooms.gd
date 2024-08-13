@@ -13,6 +13,7 @@ extends RefCounted
 @export var background_fill = .0
 @export var hallway_fill = 1.0
 @export var room_fill = 1.0
+@export var room_grid_fill = 1.0
 var global_grid_size: Vector2i
 var map_grid_size: Vector2i
 var rng: RandomNumberGenerator
@@ -116,6 +117,13 @@ func get_empty_neighbors(cell: GridCell) -> Array[GridCell]:
 func get_connection_count(depth: int) -> int:
 	return rng.randi_range(min_room_connections, max_room_connections)
 	
+func is_in_room_grid(x, y) -> bool:
+	var gridX = x / tiles_per_cell
+	var gridY = y / tiles_per_cell
+	var localX = x - (gridX * tiles_per_cell)
+	var localY = y - (gridY * tiles_per_cell)
+	return grid[gridX][gridY].type != CellType.Empty and localX != 0 and localX != tiles_per_cell - 1 and localY != 0 and localY != tiles_per_cell - 1
+	
 func get_global_coord_tile(x: int, y: int) -> bool:
 	return grid[x / tiles_per_cell][y / tiles_per_cell].type != CellType.Empty
 
@@ -124,7 +132,10 @@ func get_global_grid() -> Array[Array]:
 	for x in global_grid_size.x:
 		var row = []
 		for y in global_grid_size.y:
-			row.append(rng.randf() < background_fill)
+			if is_in_room_grid(x, y):
+				row.append(rng.randf() < room_grid_fill)
+			else:
+				row.append(rng.randf() < background_fill)
 		global_grid.append(row)
 	for x in map_grid_size.x:
 		for y in map_grid_size.y:
