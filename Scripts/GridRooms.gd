@@ -7,6 +7,7 @@ extends RefCounted
 @export var hallway_thickness: int = 2
 @export var tiles_per_cell: int = 20
 @export var target_depth: int = 10
+@export var max_rooms: int = 20
 @export var max_room_connections: int = 4
 @export var min_room_connections: int = 1
 @export var background_fill = .0
@@ -41,34 +42,54 @@ func generate_map() -> void:
 	var root: GridCell = grid[map_grid_size.x / 2][map_grid_size.y - 1]
 	root.type = CellType.Room
 	root.depth = 1
+	processing_rooms = [root]
+	
+	# Walk to target depth
 	var lastNode = root
 	for i in range(target_depth - 1):
 		if not grid_is_full():
 			var neighbors = get_empty_neighbors(lastNode)
+			if neighbors.is_empty():
+				# TODO add recursive backtracking to branch from previous point
+				print("Stuck with depth: " + str(lastNode.depth))
+				break
 			var node: GridCell = neighbors[rng.randi_range(0, neighbors.size() - 1)]
 			node.type = CellType.Room
 			node.depth = lastNode.depth + 1
 			node.connections.append(lastNode)
+			processing_rooms.append(node)
 			lastNode.connections.append(node)
 			lastNode = node
-	#processing_rooms = [root]
-	#while not processing_rooms.is_empty() and should_add_more_rooms():
-		#add_connections()
+	
+	# Add branching paths
+	while not processing_rooms.is_empty() and cell_count(CellType.Room) < max_rooms:
+		add_connections()
+		
+	# Add cycles
+
+
 
 func grid_is_full() -> bool:
+	return cell_count(CellType.Empty) == 0
+
+func cell_count(type) -> int:
+	var count = 0
 	for x in range(map_grid_size.x):
 		for y in range(map_grid_size.y):
-			var tile: GridCell = grid[x][y]
-			if tile.type == CellType.Empty:
-				return false
-	return true
+			if grid[x][y].type == type:
+				count += 1
+	return count
 
 func add_connections() -> void:
 	var cell: GridCell = processing_rooms.pop_front()
 	var open_spaces = get_empty_neighbors(cell)
 	if open_spaces.is_empty():
 		return
-	var connection_count = get_connection_count(open_spaces.size(), cell.depth) - cell.connections.size()
+	var cc = get_connection_count(cell.depth)
+	var connection_count = cc - cell.connections.size()
+	if (connection_count > open_spaces.size()):
+		connection_count = open_spaces.size()
+	print("Connection count: " + str(cc) + "    Current connections: " + str(cell.connections.size()))
 	if (connection_count < 0):
 		connection_count = 0
 	print("Creating room with " + str(connection_count) + " connections")
@@ -92,11 +113,8 @@ func get_empty_neighbors(cell: GridCell) -> Array[GridCell]:
 					neighbors.append(grid[x][y])
 	return neighbors
 
-func get_connection_count(max_connections: int, depth: int) -> int:
-	if max_connections > max_room_connections:
-		max_connections = max_room_connections
-	var min_connections = min_room_connections if depth >= (target_depth / 2) + 1 else min_room_connections + 2
-	return rng.randi_range(min_room_connections, max_connections)
+func get_connection_count(depth: int) -> int:
+	return rng.randi_range(min_room_connections, max_room_connections)
 	
 func get_global_coord_tile(x: int, y: int) -> bool:
 	return grid[x / tiles_per_cell][y / tiles_per_cell].type != CellType.Empty
