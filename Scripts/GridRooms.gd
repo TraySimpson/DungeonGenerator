@@ -147,8 +147,8 @@ func get_global_grid() -> Array[Array]:
 func draw_room(map, cell: GridCell) -> void:
 	var width = rng.randi_range(min_room_dimension, max_room_dimension + 1)
 	var height = rng.randi_range(min_room_dimension, max_room_dimension + 1)
-	var x_offset = rng.randi_range(0, tiles_per_cell - (2 + width))
-	var y_offset = rng.randi_range(0, tiles_per_cell - (2 + height))
+	var x_offset = rng.randi_range(1, tiles_per_cell - (1 + width))
+	var y_offset = rng.randi_range(1, tiles_per_cell - (1 + height))
 	var position = cell.coordinates * tiles_per_cell + Vector2i(x_offset, y_offset)
 	for x in range(width):
 		for y in range(height):
