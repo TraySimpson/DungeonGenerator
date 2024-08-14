@@ -14,12 +14,29 @@ var cellular_automata: CellularAutomata
 var grid_rooms: GridRooms
 
 const LAYER = 0
-const TILESET_SOURCE = 0
+const DEBUG_TILESET_SOURCE = 0
 const BLACK: Vector2i = Vector2i(0, 0)
 const WHITE: Vector2i = Vector2i(1, 0)
 const BLUE: Vector2i = Vector2i(0, 1)
 const GREEN: Vector2i = Vector2i(1, 1)
 
+const TILESET_SOURCE = 1
+const TOP_LEFT_CORNER: Vector2i = Vector2i(0, 0)
+const TOP_EDGE: Vector2i = Vector2i(1, 0)
+const TOP_RIGHT_CORNER: Vector2i = Vector2i(2, 0)
+const EMPTY: Vector2i = Vector2i(3, 0)
+const LEFT_EDGE: Vector2i = Vector2i(0, 1)
+const CENTER: Vector2i = Vector2i(1, 1)
+const RIGHT_EDGE: Vector2i = Vector2i(2, 1)
+const TWIN_LEFT_RIGHT: Vector2i = Vector2i(3, 1)
+const BOTTOM_LEFT_CORNER: Vector2i = Vector2i(0, 2)
+const BOTTOM_EDGE: Vector2i = Vector2i(1, 2)
+const BOTTOM_RIGHT_CORNER: Vector2i = Vector2i(2, 2)
+const TWIN_RIGHT_LEFT: Vector2i = Vector2i(3, 2)
+const GAP_BOTTOM_RIGHT: Vector2i = Vector2i(0, 3)
+const GAP_BOTTOM_LEFT: Vector2i = Vector2i(1, 3)
+const GAP_TOP_RIGHT: Vector2i = Vector2i(2, 3)
+const GAP_TOP_LEFT: Vector2i = Vector2i(3, 3)
 
 func _ready():
 	draw_map()
@@ -41,15 +58,27 @@ func draw_map():
 	grid_rooms.init(rng, Vector2i(map_width, map_height))
 	grid_rooms.generate_map()
 	render_tilemap()
-	
 
 func render_tilemap():
+	cellular_automata.cells = grid_rooms.get_global_grid()
+	cellular_automata.iterate(6)
+	for x in range(map_width):
+		for y in range(map_height):
+			set_cell(LAYER, Vector2i(x, y), TILESET_SOURCE, 
+				get_tile(x, y, cellular_automata.cells))
+
+func get_tile(x: int, y: int, map: Array) -> Vector2i:
+	if x == 0 or x == map_width-1 or y == 0 or y == map_height-1:
+		return CENTER
+	return TOP_LEFT_CORNER
+
+func render_tilemap_black_and_white():
 	cellular_automata.cells = grid_rooms.get_global_grid()
 	#cellular_automata.cells = get_array_from_tilemap()
 	cellular_automata.iterate(cell_iterations)
 	for x in range(map_width):
 		for y in range(map_height):
-			set_cell(LAYER, Vector2i(x, y), TILESET_SOURCE, 
+			set_cell(LAYER, Vector2i(x, y), DEBUG_TILESET_SOURCE, 
 			WHITE if cellular_automata.cells[x][y] else BLACK)
 
 func get_array_from_grid_graph() -> Array[Array]:
