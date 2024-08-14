@@ -99,11 +99,11 @@ func get_tile(x: int, y: int, map: Array) -> Vector2i:
 	# Top left
 	key += "1" if map[x][y] else "0"
 	# Top right
-	key += "1" if map[x-1][y] else "0"
+	key += "1" if map[x+1][y] else "0"
 	# Bottom left
-	key += "1" if map[x][y-1] else "0"
+	key += "1" if map[x][y+1] else "0"
 	# Bottom right
-	key += "1" if map[x-1][y-1] else "0"
+	key += "1" if map[x+1][y+1] else "0"
 	
 	return TILE_DICT[key]
 
