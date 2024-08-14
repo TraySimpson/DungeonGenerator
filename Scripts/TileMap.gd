@@ -38,6 +38,30 @@ const GAP_BOTTOM_LEFT: Vector2i = Vector2i(1, 3)
 const GAP_TOP_RIGHT: Vector2i = Vector2i(2, 3)
 const GAP_TOP_LEFT: Vector2i = Vector2i(3, 3)
 
+const NEIGHBORS: Array[Vector2i] = [
+	Vector2i(0, 0), # Top left
+	Vector2i(1, 0), # Top right
+	Vector2i(0, 1), # Bottom left
+	Vector2i(1, 1), # Bottom right
+]
+
+const TILE_DICT: Dictionary = {
+	"0000": EMPTY,
+	"0001": TOP_LEFT_CORNER,
+	"0010": TOP_RIGHT_CORNER,
+	"0100": BOTTOM_LEFT_CORNER,
+	"1000": BOTTOM_RIGHT_CORNER,
+	"0101": TWIN_RIGHT_LEFT,
+	"1010": TWIN_LEFT_RIGHT,
+	"0011": TOP_EDGE,
+	"1100": BOTTOM_EDGE,
+	"0111": GAP_TOP_LEFT,
+	"1011": GAP_TOP_RIGHT,
+	"1101": GAP_BOTTOM_LEFT,
+	"1110": GAP_BOTTOM_RIGHT,
+	"1111": CENTER
+}
+
 func _ready():
 	draw_map()
 
@@ -68,9 +92,20 @@ func render_tilemap():
 				get_tile(x, y, cellular_automata.cells))
 
 func get_tile(x: int, y: int, map: Array) -> Vector2i:
+	# Map Border
 	if x == 0 or x == map_width-1 or y == 0 or y == map_height-1:
 		return CENTER
-	return TOP_LEFT_CORNER
+	var key = ""
+	# Top left
+	key += "1" if map[x][y] else "0"
+	# Top right
+	key += "1" if map[x-1][y] else "0"
+	# Bottom left
+	key += "1" if map[x][y-1] else "0"
+	# Bottom right
+	key += "1" if map[x-1][y-1] else "0"
+	
+	return TILE_DICT[key]
 
 func render_tilemap_black_and_white():
 	cellular_automata.cells = grid_rooms.get_global_grid()
