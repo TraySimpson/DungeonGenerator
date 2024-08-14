@@ -96,7 +96,8 @@ func render_tilemap():
 func get_tile(x: int, y: int, map: Array) -> Vector2i:
 	# Map Border
 	if x == 0 or x == map_width-1 or y == 0 or y == map_height-1:
-		return CENTER
+		return EMPTY
+		
 	var key = ""
 	# Top left
 	key += "1" if map[x][y] else "0"
