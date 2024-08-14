@@ -2,7 +2,7 @@ extends TileMap
 
 @export var map_width: int = 71
 @export var map_height: int = 40
-@export var seed: int = 10059
+@export var seed: int = 964502
 @export var blue_fill: float = 0.5
 @export var green_fill: float = 0.8
 @export var room_count: int = 5
@@ -31,7 +31,10 @@ func _input(event):
 		
 func draw_map():
 	rng = RandomNumberGenerator.new()
-	#rng.seed = seed
+	rng.seed = seed
+	#var newSeed = rng.randi_range(1,1000000)
+	#rng.seed = newSeed
+	#print("Seed: " + str(newSeed))
 	cellular_automata = CellularAutomata.new()
 	cellular_automata.init(rng, Vector2i(map_width, map_height))
 	grid_rooms = GridRooms.new()

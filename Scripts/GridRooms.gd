@@ -2,8 +2,8 @@ class_name GridRooms
 extends RefCounted
 
 
-@export var max_room_dimension: int = 15
-@export var min_room_dimension: int = 6
+@export var max_room_dimension: int = 10
+@export var min_room_dimension: int = 5
 @export var hallway_thickness: int = 2
 @export var tiles_per_cell: int = 20
 @export var target_depth: int = 10
@@ -90,10 +90,8 @@ func add_connections() -> void:
 	var connection_count = cc - cell.connections.size()
 	if (connection_count > open_spaces.size()):
 		connection_count = open_spaces.size()
-	print("Connection count: " + str(cc) + "    Current connections: " + str(cell.connections.size()))
 	if (connection_count < 0):
 		connection_count = 0
-	print("Creating room with " + str(connection_count) + " connections")
 	for i in range(connection_count):
 		var new_room: GridCell = open_spaces.pop_at(
 			rng.randi_range(0, open_spaces.size() - 1)
